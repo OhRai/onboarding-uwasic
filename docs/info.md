@@ -9,7 +9,7 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-Explain how your project works
+This is going to be my UW ASIC onboarding project, making and using the SPI protocol.
 
 ## How to test
 
