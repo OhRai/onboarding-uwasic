@@ -32,8 +32,9 @@ module tt_um_uwasic_onboarding_raiyan_samin (
   wire [7:0] en_reg_pwm_15_8;
   wire [7:0] pwm_duty_cycle;
 
-  wire [15:0] out;  
+  wire [15:0] pwm_out;
 
+  // SPI
   spi spi_0 (
     .clk(clk),
     .rst_n(rst_n), 
@@ -46,7 +47,6 @@ module tt_um_uwasic_onboarding_raiyan_samin (
     .data(data)
   );
 
-  // PWM Input 
   always @(*) begin
     case(address)
       7'h00: en_reg_out_7_0   = data;
@@ -57,6 +57,7 @@ module tt_um_uwasic_onboarding_raiyan_samin (
     endcase
   end
 
+  // PWM 
   pwm_peripheral pwm_0 (
     .clk(clk),
     .rst_n(rst_n),
@@ -66,9 +67,13 @@ module tt_um_uwasic_onboarding_raiyan_samin (
     .en_reg_pwm_15_8(en_reg_pwm_15_8),
     .pwm_duty_cycle(pwm_duty_cycle),
 
+    .out(pwm_out)
   );
 
+  assign uo_out   = pwm_out[7:0];
+  assign uio_out  = pwm_out[15:8]; 
+
   // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, 1'b0};
+  wire _unused = &{ena, 1'b0};
 
 endmodule
