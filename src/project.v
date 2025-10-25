@@ -18,19 +18,16 @@ module tt_um_uwasic_onboarding_raiyan_samin (
   parameter MAX_ADDRESS = 7'h04;
 
   // All output pins must be assigned. If not used, assign to 0.
-  assign uo_out  = ui_in + uio_in;  // Example: ou_out is the sum of ui_in and uio_in
-  assign uio_out = 0;
-  assign uio_oe  = 0;
 
   wire read_write;
   wire [6:0] address;
   wire [7:0] data;
 
-  wire [7:0] en_reg_out_7_0;
-  wire [7:0] en_reg_out_15_8;
-  wire [7:0] en_reg_pwm_7_0;
-  wire [7:0] en_reg_pwm_15_8;
-  wire [7:0] pwm_duty_cycle;
+  reg [7:0] en_reg_out_7_0;
+  reg [7:0] en_reg_out_15_8;
+  reg [7:0] en_reg_pwm_7_0;
+  reg [7:0] en_reg_pwm_15_8;
+  reg [7:0] pwm_duty_cycle;
 
   wire [15:0] pwm_out;
 
@@ -39,22 +36,32 @@ module tt_um_uwasic_onboarding_raiyan_samin (
     .clk(clk),
     .rst_n(rst_n), 
     .sclk(ui_in[0]),
-    .nCS(ui_in[1]),
-    .copi(ui_in[2]),
+    .nCS(ui_in[2]),
+    .copi(ui_in[1]),
 
     .read_write(read_write),
     .address(address),
     .data(data)
   );
 
-  always @(*) begin
-    case(address)
-      7'h00: en_reg_out_7_0   = data;
-      7'h01: en_reg_out_15_8  = data;
-      7'h02: en_reg_pwm_7_0   = data;
-      7'h03: en_reg_pwm_15_8  = data;
-      7'h04: pwm_duty_cycle   = data;
-    endcase
+  always @(posedge clk) begin
+    if (!rst_n) begin
+      en_reg_out_7_0  <= 0;
+      en_reg_out_15_8 <= 0;
+      en_reg_pwm_7_0  <= 0;
+      en_reg_pwm_15_8 <= 0;
+      pwm_duty_cycle  <= 0;
+    end else begin
+      if (read_write) begin
+        case (address)
+          7'h00: en_reg_out_7_0   <= data;
+          7'h01: en_reg_out_15_8  <= data;
+          7'h02: en_reg_pwm_7_0   <= data;
+          7'h03: en_reg_pwm_15_8  <= data;
+          7'h04: pwm_duty_cycle   <= data;
+        endcase
+      end
+    end
   end
 
   // PWM 
