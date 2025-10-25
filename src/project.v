@@ -16,7 +16,7 @@ module tt_um_uwasic_onboarding_raiyan_samin (
     input  wire       rst_n     // reset_n - low to reset
 );
   // All output pins must be assigned. If not used, assign to 0.
-  assign uio_oe = 8'hFF;
+  assign uio_oe = 8'b0;
 
   wire read_write;
   wire [6:0] address;
@@ -58,14 +58,6 @@ module tt_um_uwasic_onboarding_raiyan_samin (
           7'h02: en_reg_pwm_7_0   <= data;
           7'h03: en_reg_pwm_15_8  <= data;
           7'h04: pwm_duty_cycle   <= data;
-
-          default: begin
-            en_reg_out_7_0 <= 0;
-            en_reg_out_15_8 <= 0;
-            en_reg_pwm_7_0 <= 0;
-            en_reg_pwm_15_8 <= 0;
-            pwm_duty_cycle <= 0;
-          end
         endcase
       end
     end
