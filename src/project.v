@@ -15,9 +15,8 @@ module tt_um_uwasic_onboarding_raiyan_samin (
     input  wire       clk,      // clock
     input  wire       rst_n     // reset_n - low to reset
 );
-  parameter MAX_ADDRESS = 7'h04;
-
   // All output pins must be assigned. If not used, assign to 0.
+  assign uio_oe = 
 
   wire read_write;
   wire [6:0] address;
@@ -44,7 +43,7 @@ module tt_um_uwasic_onboarding_raiyan_samin (
     .data(data)
   );
 
-  always @(posedge clk) begin
+  always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       en_reg_out_7_0  <= 0;
       en_reg_out_15_8 <= 0;
@@ -59,6 +58,14 @@ module tt_um_uwasic_onboarding_raiyan_samin (
           7'h02: en_reg_pwm_7_0   <= data;
           7'h03: en_reg_pwm_15_8  <= data;
           7'h04: pwm_duty_cycle   <= data;
+
+          default: begin
+            en_reg_out_7_0 <= 0;
+            en_reg_out_15_8 <= 0;
+            en_reg_pwm_7_0 <= 0;
+            en_reg_pwm_15_8 <= 0;
+            pwm_duty_cycle <= 0;
+          end
         endcase
       end
     end
@@ -81,6 +88,6 @@ module tt_um_uwasic_onboarding_raiyan_samin (
   assign uio_out  = pwm_out[15:8]; 
 
   // List all unused inputs to prevent warnings
-  wire _unused = &{ena, 1'b0};
+  wire _unused = &{ena, uio_in, ui_in[7:3], 1'b0};
 
 endmodule

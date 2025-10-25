@@ -41,14 +41,14 @@ module spi (
     reg transaction_ready;
     reg [15:0] spi_output;
 
-    always @(posedge clk) begin
+    always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            spi_cycle           <= 4'b0;
+            spi_cycle           <= 5'b0;
             transaction_ready   <= 1'b0;
         end else begin
             // Chip Select
             if (ncs_falling_edge) begin
-                spi_cycle           <= 4'b0;
+                spi_cycle           <= 5'b0;
                 transaction_ready   <= 1'b1;
             end
             
