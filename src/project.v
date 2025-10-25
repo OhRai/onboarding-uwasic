@@ -16,7 +16,7 @@ module tt_um_uwasic_onboarding_raiyan_samin (
     input  wire       rst_n     // reset_n - low to reset
 );
   // All output pins must be assigned. If not used, assign to 0.
-  assign uio_oe = 
+  assign uio_oe = 8'hFF;
 
   wire read_write;
   wire [6:0] address;
