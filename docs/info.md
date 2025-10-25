@@ -9,11 +9,11 @@ You can also include images in this folder and reference them in the markdown. E
 
 ## How it works
 
-This is going to be my UW ASIC onboarding project, making and using the SPI protocol. a
+This is going to be my UW ASIC onboarding project, making and using the SPI protocol. It reads the COPI data 1 bit at a time, then parse the 16 bits of COPI data and split it into a READ/WRITE signal, ADDRESS bits, and the DATA bits.
 
 ## How to test
 
-Explain how to use your project a
+Explain how to use your project aaaa adsfafsasf adsfasfdas
 
 ## External hardware
 
