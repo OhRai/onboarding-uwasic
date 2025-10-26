@@ -8,6 +8,27 @@ from cocotb.triggers import ClockCycles
 from cocotb.types import Logic
 from cocotb.types import LogicArray
 
+async def rising_edge(dut, signal):
+    while int(signal.value) != 0:
+        await ClockCycles(dut.clk, 1) 
+
+    while int(signal.value) != 1:
+        await ClockCycles(dut.clk, 1) 
+    dut._log.info("Detected Rising Edge")
+
+    return
+
+async def falling_edge(dut, signal):
+    while int(signal.value) != 1:
+        await ClockCycles(dut.clk, 1) 
+
+    while int(signal.value) != 0:
+        await ClockCycles(dut.clk, 1) 
+    dut._log.info("Detected Rising Edge")
+
+    return
+
+
 async def await_half_sclk(dut):
     """Wait for the SCLK signal to go high or low."""
     start_time = cocotb.utils.get_sim_time(units="ns")
@@ -152,6 +173,56 @@ async def test_spi(dut):
 @cocotb.test()
 async def test_pwm_freq(dut):
     # Write your test here
+    dut._log.info("Start PWM Frequency test")
+
+    # -------------------- Initialization -------------------- #
+    # Set the clock period to 100 ns (10 MHz)
+    clock = Clock(dut.clk, 100, units="ns")
+    cocotb.start_soon(clock.start())
+
+    # Reset
+    dut._log.info("Reset")
+    dut.ena.value = 1
+    ncs = 1
+    bit = 0
+    sclk = 0
+    dut.ui_in.value = ui_in_logicarray(ncs, bit, sclk)
+    dut.rst_n.value = 0
+    await ClockCycles(dut.clk, 5)
+    dut.rst_n.value = 1
+    await ClockCycles(dut.clk, 5)
+
+    # Duty Cycle 50%
+    dut._log.info("Set duty cycle to 50%")
+    await send_spi_transaction(dut, 1, 0x00, 0xFF)
+    await ClockCycles(dut.clk, 1000) 
+
+    await send_spi_transaction(dut, 1, 0x01, 0xFF)
+    await ClockCycles(dut.clk, 100)
+
+    await send_spi_transaction(dut, 1, 0x02, 0xFF)
+    await ClockCycles(dut.clk, 100)
+
+    await send_spi_transaction(dut, 1, 0x04, 0x80)  # Set duty cycle to 50% (128 / 256)
+    await ClockCycles(dut.clk, 30000)
+
+    # -------------------- Testing Frequency -------------------- #
+    # Since only the uo_out bits are being flipped between 0x00 and 0xFF, we can just check any bit of that
+    # We can poll until we see changes
+
+    await rising_edge(dut, dut.uo_out[0])
+    start_time = cocotb.utils.get_sim_time(units="ns")
+
+    await rising_edge(dut, dut.uo_out[0])
+    end_time = cocotb.utils.get_sim_time(units="ns")
+
+    # Period
+    period = (end_time - start_time) * (10**(-9))
+    frequency = 1 / period
+    dut._log.info(f"Detected Frequency of {frequency:.2f} Hz")
+
+    assert (frequency > (3000 - 3000*0.01) and frequency < (3000 + 3000*0.01)), "Expected frequency of 3 kHz, +- 1%"
+    
     dut._log.info("PWM Frequency test completed successfully")
 
 
