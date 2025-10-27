@@ -58,6 +58,10 @@ module tt_um_uwasic_onboarding_raiyan_samin (
           7'h02: en_reg_pwm_7_0   <= data;
           7'h03: en_reg_pwm_15_8  <= data;
           7'h04: pwm_duty_cycle   <= data;
+
+          default: begin 
+            // do nothing for invalid addresses
+          end
         endcase
       end
     end
