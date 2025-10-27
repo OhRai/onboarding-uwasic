@@ -45,6 +45,9 @@ module spi (
         if (!rst_n) begin
             spi_cycle           <= 5'b0;
             transaction_ready   <= 1'b0;
+            read_write          <= 1'b0;
+            address             <= 7'b0;
+            data                <= 8'b0;
         end else begin
             // Chip Select
             if (ncs_falling_edge) begin

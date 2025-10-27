@@ -13,8 +13,8 @@ This is going to be my UW ASIC onboarding project, making and using the SPI prot
 
 ## How to test
 
-Explain how to use your project aaaa adsfafsasf adsfasfdas
+To test this project, I'm going to first test out the SPI protocol and give it both valid and invalid data. To test the PWM peripheral, I test it's frequency by calculating 1/period, then I test the duty cycle of the PWM with various percentages like 0%, 50%, and 100%.
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any a
+List external hardware used in your project (e.g. PMOD, LED display, etc), if any.
